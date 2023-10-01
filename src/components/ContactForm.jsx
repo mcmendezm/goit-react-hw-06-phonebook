@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from '../redux/contactSlice';
 
 function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.contacts);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -18,9 +19,19 @@ function ContactForm() {
 
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(addContact({ id: generateUniqueId(), name, number }));
-    setName('');
-    setNumber('');
+
+    // Verificar si el nombre ya existe en la lista
+    const nameExists = contacts.some(contact => contact.name === name);
+
+    if (nameExists) {
+      alert(
+        'El nombre ya existe en la lista de contactos. Por favor, elige otro nombre.'
+      );
+    } else {
+      dispatch(addContact({ id: generateUniqueId(), name, number }));
+      setName('');
+      setNumber('');
+    }
   };
 
   const generateUniqueId = () => {
