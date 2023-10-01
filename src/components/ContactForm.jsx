@@ -20,7 +20,6 @@ function ContactForm() {
   const handleSubmit = e => {
     e.preventDefault();
 
-    // Verificar si el nombre ya existe en la lista
     const nameExists = contacts.some(contact => contact.name === name);
 
     if (nameExists) {
