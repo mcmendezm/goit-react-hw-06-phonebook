@@ -1,53 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact, deleteContact, setFilter } from '../redux/contactSlice';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    const storedContacts = localStorage.getItem('contacts');
-    if (storedContacts) {
-      setContacts(JSON.parse(storedContacts));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter);
+  const dispatch = useDispatch();
 
   const handleAddContact = (name, number) => {
-    if (isContactNameUnique(name)) {
-      const newContact = { id: generateUniqueId(), name, number };
-      setContacts(prevContacts => [...prevContacts, newContact]);
-    } else {
-      alert(`Contact "${name}" already exists!`);
-    }
-  };
-
-  const generateUniqueId = () => {
-    return Date.now().toString();
-  };
-
-  const isContactNameUnique = name => {
-    return !contacts.some(contact => contact.name === name);
+    dispatch(addContact({ id: generateUniqueId(), name, number }));
   };
 
   const handleDeleteContact = id => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    );
+    dispatch(deleteContact(id));
   };
 
   const handleFilterChange = e => {
-    setFilter(e.target.value);
+    dispatch(setFilter(e.target.value));
   };
 
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
+
+  const generateUniqueId = () => {
+    return Date.now().toString();
+  };
 
   return (
     <div>
