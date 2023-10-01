@@ -5,14 +5,18 @@ import { deleteContact } from '../redux/contactSlice';
 function ContactList() {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter);
 
   const handleDeleteClick = id => {
     dispatch(deleteContact(id));
   };
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <ul>
-      {contacts.map(contact => (
+      {filteredContacts.map(contact => (
         <li key={contact.id}>
           {contact.name}: {contact.number}
           <button

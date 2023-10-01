@@ -6,7 +6,6 @@ import ContactList from './ContactList';
 import Filter from './Filter';
 
 function App() {
-  const contacts = useSelector(state => state.contacts.contacts);
   const filter = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
 
@@ -22,10 +21,6 @@ function App() {
     dispatch(setFilter(e.target.value));
   };
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
   const generateUniqueId = () => {
     return Date.now().toString();
   };
@@ -37,10 +32,7 @@ function App() {
 
       <h2 style={{ color: '#2874A6' }}>Contacts</h2>
       <Filter filter={filter} onChange={handleFilterChange} />
-      <ContactList
-        contacts={filteredContacts}
-        onDeleteContact={handleDeleteContact}
-      />
+      <ContactList onDeleteContact={handleDeleteContact} />
     </div>
   );
 }
